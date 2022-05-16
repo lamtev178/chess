@@ -1,0 +1,56 @@
+body{
+  margin:0;
+  background-color:#262626;
+}
+.cell-dark, .cell-white{
+  min-width: 100px;
+  height: 100px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.cell-dark{
+  background-color: #7a7873;
+  color: white;
+}
+.cell-white{
+  background-color: rgb(224, 217, 193);
+  color: black;
+}
+.flex{
+  display: flex;
+}
+.board {
+  width : 800px;
+  flex-wrap: wrap;
+  margin: auto;
+}
+.cell-dark img, .cell-white img{
+  width: 85px;
+  height: 85px;
+  cursor: grab;
+}
+.app{
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cell-available {
+  position: relative;
+  border-radius:50%;
+  width: 15px;
+  height: 15px;
+  background-color: #937535;
+}
+.attacked::after {
+  position: absolute;
+  content: "";
+  width: 90px;
+  height: 90px;
+  border-radius:50%;
+  border: 2px solid #333
+}
+.active{
+  background-color: #d5b46d;
+}
