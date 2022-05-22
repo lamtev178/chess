@@ -18,12 +18,12 @@ export const movePiece = (cell:cell, board:cell[], formerCell:cell) => (dispatch
     })]
   dispatch({type:BoardActionTypes.MOVE_PIECE, payload: res});
 }
-export const clickOnFigure = (cell:cell, board:cell[]) => (dispatch:Dispatch<boardAction>) => {
+export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch:Dispatch<boardAction>) => {
   board = [...board.map(c => c.available===true ? {...c, available:false} : c)]
   let res:cell[] = [];
   const figure = cell.piece?.split("_")[0]
   const color = cell.piece?.split("_")[1]
-  if(color==="WHITE"){
+  if(color==="WHITE" && turn == "white"){
     switch(figure){
       case "KING":
         return console.log("KING");
@@ -70,7 +70,8 @@ export const clickOnFigure = (cell:cell, board:cell[]) => (dispatch:Dispatch<boa
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
     }
-  }else{
+  }
+  if(color==="DARK" && turn == "dark"){
     switch(figure){
       case "KING":
         return console.log("KING");
@@ -118,4 +119,5 @@ export const clickOnFigure = (cell:cell, board:cell[]) => (dispatch:Dispatch<boa
       }
     }
   }
+  dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:board})
 }

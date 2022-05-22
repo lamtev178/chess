@@ -31,13 +31,4 @@ interface ClickOnFigure {
   type: BoardActionTypes.CLICK_ON_FIGURE,
   payload: cell[]
 }
-interface EatPieceAction {
-  type: BoardActionTypes.EAT_PIECE,
-  payload: {
-    piece : pieces,
-    eatedPiece : pieces,
-    from : string,
-    to : string
-  }
-}
-export type boardAction = MovePieceAction | EatPieceAction | Castle | MovePieceAction | ChangeTurn | ClickOnFigure
+export type boardAction = MovePieceAction | Castle | MovePieceAction | ChangeTurn | ClickOnFigure

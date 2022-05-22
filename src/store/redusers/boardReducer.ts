@@ -1,7 +1,12 @@
 import { boardAction, BoardActionTypes, cell } from "../../types/board"
 import { pieces } from "../../types/pieces"
-
-const initialState:cell[] = [
+interface initialStateProps{
+  turn: "white" | "dark",
+  board: cell[]
+}
+const initialState:initialStateProps = {
+  turn : "white",
+  board : [
   {
   cell : "a8",
   piece : pieces.ROOK_DARK,
@@ -322,15 +327,15 @@ const initialState:cell[] = [
   piece : pieces.ROOK_WHITE,
   available: false
   },
-]
+]}
 
-export const boardReducer = (store = initialState, action: boardAction):cell[] =>{
+export const boardReducer = (store = initialState, action: boardAction):initialStateProps =>{
   switch(action.type){
     case BoardActionTypes.CLICK_ON_FIGURE:
-      return action.payload
+      return {board: action.payload, turn: store.turn}
     case BoardActionTypes.MOVE_PIECE:
-      return action.payload
-    default: 
+      return {board: action.payload, turn: store.turn === "white" ? "dark" : "white"}
+    default:
       return store
   }
 }
