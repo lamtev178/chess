@@ -1,6 +1,7 @@
 import { cell } from "../../types/board"
+import { pieces } from "../../types/pieces"
 
-export function bishop(cell:cell, board:cell[]):string[]{
+export function bishop(cell:cell, board:cell[], king? : "WHITE" | "DARK"):string[]{
   let arrOfRightDiagonalWithPieces:string[] = []
   let resArrOfRightDiagonalWithPieces:string[] = []
   let arrOfLeftDiagonalWithPieces:string[] = []
@@ -42,7 +43,7 @@ export function bishop(cell:cell, board:cell[]):string[]{
       for (let c of board){
         const isRightDiagonal:boolean = rightDiagonal.indexOf(c.cell) !== -1
         const isLeftDiagonal:boolean = leftDiagonal.indexOf(c.cell) !== -1
-        const isPiece:boolean = c.piece === null
+        const isPiece:boolean = king ? (c.piece === null || c.piece === (king === "WHITE" ? pieces.KING_WHITE : pieces.KING_DARK))  : c.piece === null
         if(isRightDiagonal && isPiece)
           arrOfRightDiagonalWithPieces.push(c.cell)
         if(isLeftDiagonal && isPiece)

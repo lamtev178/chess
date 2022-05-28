@@ -1,6 +1,5 @@
 import {cell} from "../../types/board"
-
-export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]{
+export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]  {
   let res = []
   const line = cell.cell[0]
   res = [...board.map(c => {
@@ -11,8 +10,8 @@ export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]{
   const adjacentLinesLeft:string = String.fromCharCode(line.charCodeAt(0) - 1)
   const adjacentLinesRight:string = String.fromCharCode(line.charCodeAt(0) + 1)
   const pieceColor = c.piece?.split('_')[1] === color
-  const isDarkPeceLeft = c.cell===(adjacentLinesLeft+nextNum) && pieceColor
-  const isDarkPeceRight = c.cell===(adjacentLinesRight+nextNum) && pieceColor
+  const isPeceLeft = c.cell===(adjacentLinesLeft+nextNum) && pieceColor
+  const isPeceRight = c.cell===(adjacentLinesRight+nextNum) && pieceColor
   let canPushOnThirdNum = false
   let canPushOnFourthNum = false
   if(cell.cell[1]==='7' && color==="WHITE"){
@@ -25,7 +24,7 @@ export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]{
   }
   const canPushPawn = oneLine && (cNum === nextNum) && (c.piece === null)
   const canPushPawnFromTwo = oneLine && (canPushOnThirdNum || canPushOnFourthNum)
-  if(canPushPawn || isDarkPeceLeft || isDarkPeceRight || canPushPawnFromTwo)
+  if(canPushPawn || isPeceLeft || isPeceRight || canPushPawnFromTwo)
     return {...c, available:true}
   return c
   })]
