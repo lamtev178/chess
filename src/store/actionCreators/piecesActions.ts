@@ -1,13 +1,25 @@
 import { Dispatch } from "react";
 import {boardAction, BoardActionTypes, cell} from "../../types/board"
+import {pieces} from "../../types/pieces"
 import {bishop} from './bishop'
 import {rook} from "./rook"
 import {knight} from "./knight"
 import {pawn} from "./pawn"
+import {king} from "./king"
+import {isKingAttacked} from "./king"
+
+let whiteKingPos:string = "e1"
+let darkKingPos:string = "e8"
 
 export const movePiece = (cell:cell, board:cell[], formerCell:cell) => (dispatch:Dispatch<boardAction>) => {
   let res:cell[]=[];
   board = [...board.map(c => c.available===true ? {...c, available:false} : c)]
+  if(cell.piece === pieces.KING_WHITE){
+    whiteKingPos = cell.cell
+  }
+  if(cell.piece === pieces.KING_DARK){
+    darkKingPos = cell.cell
+  }
   res = [...board.map(c => {
     if(c.cell === cell.cell)
       return{...c, piece: formerCell.piece}
@@ -21,13 +33,20 @@ export const movePiece = (cell:cell, board:cell[], formerCell:cell) => (dispatch
 export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch:Dispatch<boardAction>) => {
   board = [...board.map(c => c.available===true ? {...c, available:false} : c)]
   let res:cell[] = [];
-  const figure = cell.piece?.split("_")[0]
   const color = cell.piece?.split("_")[1]
   if(color==="WHITE" && turn == "white"){
-    switch(figure){
-      case "KING":
-        return console.log("KING");
-      case "QUEEN":{
+    switch(cell.piece){
+      case pieces.KING_WHITE:{
+        let availableCells  = king(cell, board, "WHITE")
+        res = [...board.map(c => {
+          if(availableCells.indexOf(c.cell) !== -1 && !isKingAttacked(whiteKingPos, board, "WHITE")){
+            return {...c, available:true}
+          }
+          else return c
+        })]
+        return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
+      }
+      case pieces.QUEEN_WHITE:{
         const resArrOfAvailableCells = rook(cell, board)
         const resArrOfAvailableNums = bishop(cell, board)
         res = [...board.map(c => {
@@ -39,7 +58,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "ROOK":{
+      case pieces.ROOK_WHITE:{
         const resArrOfAvailableNums = rook(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "WHITE"
@@ -50,11 +69,11 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "PAWN":{
+      case pieces.PAWN_WHITE:{
         res = pawn(board, cell, "DARK")
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "BISHOP":{
+      case pieces.BISHOP_WHITE:{
       const resArrOfAvailableNums = bishop(cell, board)
       res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "WHITE"
@@ -65,17 +84,25 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "KNIGHT": {
+      case pieces.KNIGHT_WHITE: {
         res = knight(board, cell, "WHITE")
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
     }
   }
   if(color==="DARK" && turn == "dark"){
-    switch(figure){
-      case "KING":
-        return console.log("KING");
-      case "QUEEN":{
+    switch(cell.piece){
+      case pieces.KING_DARK:{
+        let availableCells  = king(cell, board, "DARK")
+        res = [...board.map(c => {
+          if(availableCells.indexOf(c.cell) !== -1 && isKingAttacked(darkKingPos, board, "DARK")){
+            return {...c, available:true}
+          }
+          else return c
+        })]
+        return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
+      }
+      case pieces.QUEEN_DARK:{
         const resArrOfAvailableCells = rook(cell, board)
         const resArrOfAvailableNums = bishop(cell, board)
         res = [...board.map(c => {
@@ -87,7 +114,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "ROOK":{
+      case pieces.ROOK_DARK:{
         const resArrOfAvailableNums = rook(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "DARK"
@@ -98,11 +125,11 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "PAWN":{
+      case pieces.PAWN_DARK:{
         res = pawn(board, cell, "WHITE")
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "BISHOP":{
+      case pieces.BISHOP_DARK:{
       const resArrOfAvailableNums = bishop(cell, board)
       res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "DARK"
@@ -113,7 +140,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
-      case "KNIGHT":{
+      case pieces.KNIGHT_DARK:{
         res = knight(board, cell, "DARK")
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }

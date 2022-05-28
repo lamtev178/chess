@@ -1,6 +1,6 @@
 import {cell} from "../../types/board"
 
-export function pawn(board:cell[], cell:cell, color:string):cell[]{
+export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]{
   let res = []
   const line = cell.cell[0]
   res = [...board.map(c => {

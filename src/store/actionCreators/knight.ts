@@ -1,6 +1,6 @@
 import {cell} from "../../types/board"
 
-export function knight(board:cell[], cell:cell, color:string):cell[]{
+export function knight(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]{
   let res = []
   res = [...board.map(c => {
     const plusOneLines:boolean =c.cell[0] === String.fromCharCode(cell.cell[0].charCodeAt(0) + 1) || c.cell[0] === String.fromCharCode(cell.cell[0].charCodeAt(0) - 1)
