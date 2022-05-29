@@ -21,7 +21,7 @@ export function  king(cell : cell, board : cell[], color: "WHITE" | "DARK"):stri
   })
   return res
 }
-export function isKingAttacked(cell : cell, kingPos : cell, board : cell[], color: "WHITE" | "DARK"):boolean{
+export function isKingAttacked(cell : cell, board : cell[], color: "WHITE" | "DARK"):boolean{
   let isAttacked:boolean = false;
   let rookArr:string[] = rook(cell, board, color)
   let bishopArr:string[] = bishop(cell, board, color)

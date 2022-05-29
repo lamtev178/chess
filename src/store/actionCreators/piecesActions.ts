@@ -10,13 +10,25 @@ import {isKingAttacked} from "./king"
 
 let whiteKingPos:cell = {cell:"e1", piece:pieces.KING_WHITE, available:false}
 let darkKingPos:cell = {cell:"e8", piece:pieces.KING_DARK, available:false}
-
+function potentialBoard(formerCell:cell, cell:cell, board:cell[]):cell[]{
+  let res :cell[] = [];
+  let piece = formerCell.piece
+  res = [...board.map(c => {
+    if(c.cell === cell.cell){
+      return {...c, piece : piece}
+    } else if(c.cell === formerCell.cell){
+      return {...c, piece : null}
+    }
+    else return c
+  })]
+  return res
+}
 export const movePiece = (cell:cell, board:cell[], formerCell:cell) => (dispatch:Dispatch<boardAction>) => {
   let res:cell[]=[];
   board = [...board.map(c => c.available===true ? {...c, available:false} : c)]
   if(formerCell.piece === pieces.KING_WHITE)
     whiteKingPos.cell = cell.cell
-  if(cell.piece === pieces.KING_DARK)
+  if(formerCell.piece === pieces.KING_DARK)
     darkKingPos.cell = cell.cell
   res = [...board.map(c => {
     if(c.cell === cell.cell)
@@ -37,7 +49,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
       case pieces.KING_WHITE:{
         let availableCells  = king(cell, board, "WHITE")
         res = [...board.map(c => {
-          if(availableCells.indexOf(c.cell) !== -1 && !isKingAttacked(c, whiteKingPos, board, "WHITE")){
+          if(availableCells.indexOf(c.cell) !== -1 && !isKingAttacked(c, board, "WHITE")){
             return {...c, available:true}
           }
           else return c
@@ -49,7 +61,10 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         const resArrOfAvailableNums = bishop(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "WHITE"
-          if((resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite) || (resArrOfAvailableCells.indexOf(c.cell) !== -1 && isWhite)){
+          if(((resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite) || 
+            (resArrOfAvailableCells.indexOf(c.cell) !== -1 && isWhite)) && 
+            !isKingAttacked(whiteKingPos, potentialBoard(cell, c, board), "WHITE")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -60,7 +75,10 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         const resArrOfAvailableNums = rook(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "WHITE"
-          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite){
+          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 && 
+            isWhite &&
+            !isKingAttacked(whiteKingPos, potentialBoard(cell, c, board), "WHITE")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -68,14 +86,24 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
       case pieces.PAWN_WHITE:{
-        res = pawn(board, cell, "DARK")
+        let pawnArr = pawn(board, cell, "DARK")
+        res = [...board.map(c => {
+          if(pawnArr.indexOf(c.cell) !== -1 &&
+            !isKingAttacked(whiteKingPos, potentialBoard(cell, c, board), "WHITE")
+          ){
+            return {...c, available:true}
+          } else return c
+        })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
       case pieces.BISHOP_WHITE:{
       const resArrOfAvailableNums = bishop(cell, board)
       res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "WHITE"
-          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite){
+          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 &&
+            isWhite &&
+            !isKingAttacked(whiteKingPos, potentialBoard(cell, c, board), "WHITE")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -85,7 +113,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
       case pieces.KNIGHT_WHITE: {
         const resArr:string[] = knight(board, cell, "WHITE")
         res = [...board.map(c => {
-          if(resArr.indexOf(c.cell) !== -1){
+          if(resArr.indexOf(c.cell) !== -1 && !isKingAttacked(whiteKingPos, potentialBoard(cell, c, board), "WHITE")){
             return {...c, available:true}
           } else return c
         })]
@@ -98,7 +126,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
       case pieces.KING_DARK:{
         let availableCells  = king(cell, board, "DARK")
         res = [...board.map(c => {
-          if(availableCells.indexOf(c.cell) !== -1 && !isKingAttacked(c, whiteKingPos, board, "DARK")){
+          if(availableCells.indexOf(c.cell) !== -1 && !isKingAttacked(c, board, "DARK")){
             return {...c, available:true}
           }
           else return c
@@ -110,7 +138,10 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         const resArrOfAvailableNums = bishop(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "DARK"
-          if((resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite) || (resArrOfAvailableCells.indexOf(c.cell) !== -1 && isWhite)){
+          if(((resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite) ||
+            (resArrOfAvailableCells.indexOf(c.cell) !== -1 && isWhite)) &&
+            !isKingAttacked(darkKingPos, potentialBoard(cell, c, board), "DARK")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -121,7 +152,10 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         const resArrOfAvailableNums = rook(cell, board)
         res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "DARK"
-          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite){
+          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 &&
+            isWhite &&
+            !isKingAttacked(darkKingPos, potentialBoard(cell, c, board), "DARK")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -129,14 +163,24 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
       case pieces.PAWN_DARK:{
-        res = pawn(board, cell, "WHITE")
+        let pawnArr = pawn(board, cell, "WHITE")
+        res = [...board.map(c => {
+          if(pawnArr.indexOf(c.cell) !== -1 &&
+            !isKingAttacked(darkKingPos, potentialBoard(cell, c, board), "DARK")
+          ){
+            return {...c, available:true}
+          } else return c
+        })]
         return dispatch({type:BoardActionTypes.CLICK_ON_FIGURE, payload:res});
       }
       case pieces.BISHOP_DARK:{
       const resArrOfAvailableNums = bishop(cell, board)
       res = [...board.map(c => {
           const isWhite:boolean = c.piece?.split('_')[1] !== "DARK"
-          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 && isWhite){
+          if(resArrOfAvailableNums.indexOf(c.cell) !== -1 &&
+            isWhite && 
+            !isKingAttacked(darkKingPos, potentialBoard(cell, c, board), "DARK")
+          ){
             return {...c, available:true}
           }
           else return c
@@ -146,7 +190,7 @@ export const clickOnFigure = (cell:cell, board:cell[], turn:string) => (dispatch
       case pieces.KNIGHT_DARK:{
         const resArr:string[] = knight(board, cell, "DARK")        
         res = [...board.map(c => {
-          if(resArr.indexOf(c.cell) !== -1){
+          if(resArr.indexOf(c.cell) !== -1 && !isKingAttacked(darkKingPos, potentialBoard(cell, c, board), "DARK")){
             return {...c, available:true}
           } else return c
         })]

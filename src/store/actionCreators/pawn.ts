@@ -1,5 +1,5 @@
 import {cell} from "../../types/board"
-export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]  {
+export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):string[]  {
   let res = []
   const line = cell.cell[0]
   res = [...board.map(c => {
@@ -25,8 +25,8 @@ export function pawn(board:cell[], cell:cell, color:"WHITE" | "DARK"):cell[]  {
   const canPushPawn = oneLine && (cNum === nextNum) && (c.piece === null)
   const canPushPawnFromTwo = oneLine && (canPushOnThirdNum || canPushOnFourthNum)
   if(canPushPawn || isPeceLeft || isPeceRight || canPushPawnFromTwo)
-    return {...c, available:true}
-  return c
+    return c.cell
+  return ""
   })]
   return res
 }
