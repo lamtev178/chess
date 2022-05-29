@@ -14,7 +14,7 @@ export const enum GameStatus {
 export const enum BoardActionTypes {
   MOVE_PIECE = "MOVE_PIECE",
   RESTART = "RESTART",
-  EAT_PIECE = "EAT_PIECE",
+  CHECK = "CHECK",
   CASTLE = "CASTLE",
   CHANGE_TURN = "CHANGE_TURN",
   CLICK_ON_FIGURE = "CLICK_ON_FIGURE",
@@ -30,6 +30,10 @@ interface Restart {
 interface MovePieceAction {
   type: BoardActionTypes.MOVE_PIECE;
   payload: cell[];
+}
+interface Check {
+  type: BoardActionTypes.CHECK;
+  payload: pieces.KING_WHITE | pieces.KING_DARK | false;
 }
 interface EndGameAction {
   type: BoardActionTypes.END_OF_GAME;
@@ -49,7 +53,7 @@ interface ClickOnFigure {
 export type boardAction =
   | MovePieceAction
   | Castle
-  | MovePieceAction
+  | Check
   | ChangeTurn
   | ClickOnFigure
   | EndGameAction

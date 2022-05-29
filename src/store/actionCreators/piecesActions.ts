@@ -10,7 +10,7 @@ import { bishopMove } from "./bishop";
 import { rookMove } from "./rook";
 import { knightMove } from "./knight";
 import { pawnMove } from "./pawn";
-import { kingMove } from "./king";
+import { isKingAttacked, kingMove } from "./king";
 import { isGameOver } from "./board";
 import { queenMove } from "./queen";
 
@@ -46,17 +46,23 @@ export const movePiece =
       }),
     ];
     const piece: any = formerCell.piece?.split("_")[1];
-    let endOfGame = isGameOver(
-      res,
-      piece === "WHITE" ? "DARK" : "WHITE",
-      darkKingPos,
-      whiteKingPos
-    );
-    if (endOfGame !== GameStatus.PLAYING) {
+    const oppositColor = piece === "WHITE" ? "DARK" : "WHITE";
+    let endOfGame = isGameOver(res, oppositColor, darkKingPos, whiteKingPos);
+    if (endOfGame !== GameStatus.PLAYING)
       dispatch({ type: BoardActionTypes.END_OF_GAME, payload: endOfGame });
-    }
-
     dispatch({ type: BoardActionTypes.MOVE_PIECE, payload: res });
+    if (
+      isKingAttacked(
+        piece === "WHITE" ? darkKingPos : whiteKingPos,
+        res,
+        oppositColor
+      )
+    ) {
+      dispatch({
+        type: BoardActionTypes.CHECK,
+        payload: piece === "WHITE" ? pieces.KING_DARK : pieces.KING_WHITE,
+      });
+    } else dispatch({ type: BoardActionTypes.CHECK, payload: false });
   };
 export const clickOnFigure =
   (cell: cell, board: cell[], turn: "white" | "dark") =>

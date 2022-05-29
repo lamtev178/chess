@@ -45,9 +45,9 @@ export function rook(
     const cNum = c.cell[1];
     const oneLine = cLine === line;
     const oneNum = num === cNum;
-    const isPiece = king
+    const isPiece: boolean = king
       ? c.piece === null ||
-        c.piece === (king === "WHITE" ? pieces.KING_WHITE : pieces.KNIGHT_DARK)
+        c.piece === (king === "WHITE" ? pieces.KING_WHITE : pieces.KING_DARK)
       : c.piece === null;
     if (oneLine && isPiece && !oneNum) arrOfLinesWithPieces.push(c.cell[1]);
     if (oneNum && isPiece && !oneLine) arrOfNumsWithPieces.push(c.cell[0]);

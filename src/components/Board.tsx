@@ -5,7 +5,9 @@ import { cell, GameStatus } from "../types/board";
 import Cell from "./Cell";
 
 const Board: FC = () => {
-  const { board, end } = useTypedSelector((store) => store.board);
+  const { board, end, isKingAttacked } = useTypedSelector(
+    (store) => store.board
+  );
   const turn = useTypedSelector<"white" | "dark">((store) => store.board.turn);
   const { clickOnFigure, movePiece, restart } = useActoins();
   const [active, setActive] = useState<cell | null>(null);
@@ -31,13 +33,19 @@ const Board: FC = () => {
               ? "black"
               : "white"
           }
+          isKingAttacked={isKingAttacked}
         />
       ))}
       {end !== GameStatus.PLAYING ? (
-        <div className="board__modal modal">
-          {end}
-          <br />
-          <button onClick={restart}>Начать снова</button>
+        <div>
+          <div className="board__modal modal">
+            {end}
+            <br />
+            <button className="btn" onClick={restart}>
+              Начать снова
+            </button>
+          </div>
+          <div className="modal-back" />
         </div>
       ) : null}
     </div>
