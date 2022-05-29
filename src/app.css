@@ -1,44 +1,47 @@
-body{
-  margin:0;
-  background-color:#262626;
+body {
+  margin: 0;
+  background-color: #262626;
+  box-sizing: border-box;
 }
-.cell-dark, .cell-white{
+.cell-dark,
+.cell-white {
   min-width: 100px;
   height: 100px;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
-.cell-dark{
+.cell-dark {
   background-color: #7a7873;
   color: white;
 }
-.cell-white{
+.cell-white {
   background-color: rgb(224, 217, 193);
   color: black;
 }
-.flex{
+.flex {
   display: flex;
 }
 .board {
-  width : 800px;
+  width: 800px;
   flex-wrap: wrap;
   margin: auto;
 }
-.cell-dark img, .cell-white img{
+.cell-dark img,
+.cell-white img {
   width: 85px;
   height: 85px;
   cursor: grab;
 }
-.app{
-  height:100vh;
+.app {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .cell-available {
   position: relative;
-  border-radius:50%;
+  border-radius: 50%;
   width: 15px;
   height: 15px;
   background-color: #937535;
@@ -48,9 +51,20 @@ body{
   content: "";
   width: 90px;
   height: 90px;
-  border-radius:50%;
-  border: 2px solid #333
+  border-radius: 50%;
+  border: 2px solid #333;
 }
-.active{
+.active {
   background-color: #d5b46d;
+}
+.modal {
+  position:fixed;
+  top:calc(50% - 50px);
+  left:calc(50% - 175px);
+  width: 350px;
+  height: 100px;
+  background-color: #262626;
+  color: #fff;
+  text-align:center;
+  padding-top: 50px;
 }

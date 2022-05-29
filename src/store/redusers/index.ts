@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import {boardReducer} from "./boardReducer";
+import { boardReducer } from "./boardReducer";
 
 export const rootReducer = combineReducers({
-  board : boardReducer
-})
+  board: boardReducer,
+});
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
