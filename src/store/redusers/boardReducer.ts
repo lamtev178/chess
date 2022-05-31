@@ -7,20 +7,20 @@ import {
 import { pieces } from "../../types/pieces";
 interface initialStateProps {
   end: GameStatus;
-  whiteCastlLong: boolean;
-  whiteCastlShort: boolean;
-  darkCastlLong: boolean;
-  darkCastlShort: boolean;
+  whiteCastleLong: boolean;
+  whiteCastleShort: boolean;
+  darkCastleLong: boolean;
+  darkCastleShort: boolean;
   isKingAttacked: false | pieces.KING_WHITE | pieces.KING_DARK;
   turn: "white" | "dark";
   board: cell[];
 }
 const initialState: initialStateProps = {
   end: GameStatus.PLAYING,
-  whiteCastlLong: true,
-  whiteCastlShort: true,
-  darkCastlLong: true,
-  darkCastlShort: true,
+  whiteCastleLong: true,
+  whiteCastleShort: true,
+  darkCastleLong: true,
+  darkCastleShort: true,
   isKingAttacked: false,
   turn: "white",
   board: [
@@ -362,6 +362,31 @@ export const boardReducer = (
       };
     case BoardActionTypes.END_OF_GAME:
       return { ...store, end: action.payload };
+    case BoardActionTypes.IS_CASTLE: {
+      if (action.payload === "h1") return { ...store, whiteCastleShort: false };
+      else if (action.payload === "a1")
+        return { ...store, whiteCastleLong: false };
+      else if (action.payload === "a8")
+        return { ...store, darkCastleLong: false };
+      else if (action.payload === "h8")
+        return { ...store, darkCastleShort: false };
+      else if (action.payload === "e8")
+        return { ...store, darkCastleShort: false, darkCastleLong: false };
+      else if (action.payload === "e1")
+        return { ...store, whiteCastleLong: false, whiteCastleShort: false };
+      else return { ...store };
+    }
+    case BoardActionTypes.CASTLE: {
+      if (action.payload === "whiteCastleShort")
+        return { ...store, whiteCastleShort: false, whiteCastleLong: false };
+      else if (action.payload === "whiteCastleLong")
+        return { ...store, whiteCastleLong: false, whiteCastleShort: false };
+      else if (action.payload === "darkCastleLong")
+        return { ...store, darkCastleLong: false, darkCastleShort: false };
+      else if (action.payload === "darkCastleShort")
+        return { ...store, darkCastleShort: false, darkCastleLong: false };
+      else return { ...store };
+    }
     case BoardActionTypes.CHECK:
       return { ...store, isKingAttacked: action.payload };
     case BoardActionTypes.RESTART:

@@ -16,6 +16,7 @@ export const enum BoardActionTypes {
   RESTART = "RESTART",
   CHECK = "CHECK",
   CASTLE = "CASTLE",
+  IS_CASTLE = "IS_CASTLE",
   CHANGE_TURN = "CHANGE_TURN",
   CLICK_ON_FIGURE = "CLICK_ON_FIGURE",
   END_OF_GAME = "END_OF_GAME",
@@ -39,12 +40,17 @@ interface EndGameAction {
   type: BoardActionTypes.END_OF_GAME;
   payload: GameStatus;
 }
+interface isCastlePossible {
+  type: BoardActionTypes.IS_CASTLE;
+  payload: "h1" | "a1" | "a8" | "h8" | "e8" | "e1";
+}
 interface Castle {
   type: BoardActionTypes.CASTLE;
-  payload: {
-    side: string;
-    direction: string;
-  };
+  payload:
+    | "whiteCastleLong"
+    | "whiteCastleShort"
+    | "darkCastleShort"
+    | "darkCastleLong";
 }
 interface ClickOnFigure {
   type: BoardActionTypes.CLICK_ON_FIGURE;
@@ -52,9 +58,10 @@ interface ClickOnFigure {
 }
 export type boardAction =
   | MovePieceAction
-  | Castle
+  | isCastlePossible
   | Check
   | ChangeTurn
   | ClickOnFigure
   | EndGameAction
-  | Restart;
+  | Restart
+  | Castle;

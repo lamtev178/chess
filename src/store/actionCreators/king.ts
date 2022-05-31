@@ -6,10 +6,22 @@ import { knight } from "./knight";
 export function kingMove(
   cell: cell,
   board: cell[],
-  color: "WHITE" | "DARK"
+  color: "WHITE" | "DARK",
+  darkCastlLong?: boolean,
+  darkCastlShort?: boolean,
+  whiteCastlLong?: boolean,
+  whiteCastlShort?: boolean
 ): cell[] {
   let res: cell[] = [];
-  let availableCells = king(cell, board, color);
+  let availableCells = king(
+    cell,
+    board,
+    color,
+    darkCastlLong,
+    darkCastlShort,
+    whiteCastlLong,
+    whiteCastlShort
+  );
   res = [
     ...board.map((c) => {
       if (
@@ -25,7 +37,11 @@ export function kingMove(
 export function king(
   cell: cell,
   board: cell[],
-  color: "WHITE" | "DARK"
+  color: "WHITE" | "DARK",
+  darkCastlLong?: boolean,
+  darkCastlShort?: boolean,
+  whiteCastlLong?: boolean,
+  whiteCastlShort?: boolean
 ): string[] {
   let res: string[] = [];
   board.forEach((c) => {
@@ -39,10 +55,33 @@ export function king(
       c.cell[0].charCodeAt(0) + 1 === cell.cell[0].charCodeAt(0);
     const isPiece: boolean = c.piece === null;
     const isPieceColor: boolean = c.piece?.split("_")[1] !== color;
+    let isCastleLong;
+    let isCastleShort;
+    if (whiteCastlLong || whiteCastlShort || darkCastlLong || darkCastlShort) {
+      const num = cell.cell[1] === "8" ? "8" : "1";
+      const firstLine = rook(cell, board, color);
+      const isPiecesFirstLineShort =
+        firstLine.indexOf(`f${num}`) !== -1 &&
+        firstLine.indexOf(`g${num}`) !== -1;
+      const isPiecesFirstLineLong =
+        firstLine.indexOf(`b${num}`) !== -1 &&
+        firstLine.indexOf(`c${num}`) !== -1 &&
+        firstLine.indexOf(`d${num}`) !== -1;
+      isCastleLong =
+        (c.cell === `a${num}` || c.cell === `c${num}`) &&
+        (cell.cell[1] === "8" ? darkCastlLong : whiteCastlLong) &&
+        isPiecesFirstLineLong;
+      isCastleShort =
+        (c.cell === `h${num}` || c.cell === `g${num}`) &&
+        (cell.cell[1] === "8" ? darkCastlShort : whiteCastlShort) &&
+        isPiecesFirstLineShort;
+    }
     if (
-      (isNextNums || isPrevNums || isNums) &&
-      (isLine || isNextLine || isPrevLine) &&
-      (isPiece || isPieceColor)
+      ((isNextNums || isPrevNums || isNums) &&
+        (isLine || isNextLine || isPrevLine) &&
+        (isPiece || isPieceColor)) ||
+      isCastleLong ||
+      isCastleShort
     ) {
       res.push(c.cell);
     }

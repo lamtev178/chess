@@ -5,8 +5,24 @@ import { cell, GameStatus } from "../types/board";
 import Cell from "./Cell";
 
 const Board: FC = () => {
-  const { board, end, isKingAttacked } = useTypedSelector(
-    (store) => store.board
+  const {
+    board,
+    end,
+    isKingAttacked,
+    darkCastleLong,
+    darkCastleShort,
+    whiteCastleLong,
+    whiteCastleShort,
+  } = useTypedSelector((store) => store.board);
+  console.log(
+    darkCastleLong,
+    "darkCastleLong",
+    darkCastleShort,
+    "darkCastleShort",
+    whiteCastleLong,
+    "whiteCastleLong",
+    whiteCastleShort,
+    "whiteCastleShort"
   );
   const turn = useTypedSelector<"white" | "dark">((store) => store.board.turn);
   const { clickOnFigure, movePiece, restart } = useActoins();
@@ -16,7 +32,16 @@ const Board: FC = () => {
   function handleClick(cell: cell) {
     setActive(cell);
     if (cell.available === true) movePiece(cell, board, formerCell!);
-    else clickOnFigure(cell, board, turn);
+    else
+      clickOnFigure(
+        cell,
+        board,
+        turn,
+        darkCastleLong,
+        darkCastleShort,
+        whiteCastleLong,
+        whiteCastleShort
+      );
     setFormerCell(cell);
   }
   return (
