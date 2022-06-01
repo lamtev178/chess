@@ -72,7 +72,7 @@ export function rook(
   for (let i = cell.cell[0].charCodeAt(0) - 1; i > 96; i--) {
     if (arrOfNumsWithPieces.indexOf(String.fromCharCode(i)) !== -1)
       resArrOfNumsWithPieces.push(String.fromCharCode(i) + cell.cell[1]);
-    else {
+    else if (king === undefined) {
       resArrOfNumsWithPieces.push(String.fromCharCode(i) + cell.cell[1]);
       break;
     }
@@ -80,7 +80,7 @@ export function rook(
   for (let i = cell.cell[0].charCodeAt(0) + 1; i < 105; i++) {
     if (arrOfNumsWithPieces.indexOf(String.fromCharCode(i)) !== -1)
       resArrOfNumsWithPieces.push(String.fromCharCode(i) + cell.cell[1]);
-    else {
+    else if (king === undefined) {
       resArrOfNumsWithPieces.push(String.fromCharCode(i) + cell.cell[1]);
       break;
     }

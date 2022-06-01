@@ -14,16 +14,6 @@ const Board: FC = () => {
     whiteCastleLong,
     whiteCastleShort,
   } = useTypedSelector((store) => store.board);
-  console.log(
-    darkCastleLong,
-    "darkCastleLong",
-    darkCastleShort,
-    "darkCastleShort",
-    whiteCastleLong,
-    "whiteCastleLong",
-    whiteCastleShort,
-    "whiteCastleShort"
-  );
   const turn = useTypedSelector<"white" | "dark">((store) => store.board.turn);
   const { clickOnFigure, movePiece, restart } = useActoins();
   const [active, setActive] = useState<cell | null>(null);

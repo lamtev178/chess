@@ -377,14 +377,69 @@ export const boardReducer = (
       else return { ...store };
     }
     case BoardActionTypes.CASTLE: {
-      if (action.payload === "whiteCastleShort")
-        return { ...store, whiteCastleShort: false, whiteCastleLong: false };
-      else if (action.payload === "whiteCastleLong")
-        return { ...store, whiteCastleLong: false, whiteCastleShort: false };
-      else if (action.payload === "darkCastleLong")
-        return { ...store, darkCastleLong: false, darkCastleShort: false };
-      else if (action.payload === "darkCastleShort")
-        return { ...store, darkCastleShort: false, darkCastleLong: false };
+      const num =
+        action.payload === "darkCastleShort" ||
+        action.payload === "darkCastleLong"
+          ? "8"
+          : "1";
+      if (
+        action.payload === "whiteCastleShort" ||
+        action.payload === "darkCastleShort"
+      )
+        return {
+          ...store,
+          whiteCastleShort: false,
+          whiteCastleLong: false,
+          board: [
+            ...store.board.map((c: cell) => {
+              if (c.cell === `h${num}` || c.cell === `e${num}`) {
+                return { ...c, piece: null, available: false };
+              } else if (c.cell === `g${num}`) {
+                return {
+                  ...c,
+                  piece: num === "8" ? pieces.KING_DARK : pieces.KING_WHITE,
+                  available: false,
+                };
+              } else if (c.cell === `f${num}`)
+                return {
+                  ...c,
+                  piece: num === "8" ? pieces.ROOK_DARK : pieces.ROOK_WHITE,
+                  available: false,
+                };
+              else return { ...c, available: false };
+            }),
+          ],
+          turn: store.turn === "white" ? "dark" : "white",
+        };
+      else if (
+        action.payload === "darkCastleLong" ||
+        action.payload === "whiteCastleLong"
+      )
+        return {
+          ...store,
+          darkCastleLong: false,
+          darkCastleShort: false,
+          board: [
+            ...store.board.map((c: cell) => {
+              if (c.cell === `a${num}` || c.cell === `e${num}`) {
+                return { ...c, piece: null, available: false };
+              } else if (c.cell === `c${num}`) {
+                return {
+                  ...c,
+                  piece: num === "8" ? pieces.KING_DARK : pieces.KING_WHITE,
+                  available: false,
+                };
+              } else if (c.cell === `d${num}`)
+                return {
+                  ...c,
+                  piece: num === "8" ? pieces.ROOK_DARK : pieces.ROOK_WHITE,
+                  available: false,
+                };
+              else return { ...c, available: false };
+            }),
+          ],
+          turn: store.turn === "white" ? "dark" : "white",
+        };
       else return { ...store };
     }
     case BoardActionTypes.CHECK:

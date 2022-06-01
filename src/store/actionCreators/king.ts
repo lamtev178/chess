@@ -70,11 +70,41 @@ export function king(
       isCastleLong =
         (c.cell === `a${num}` || c.cell === `c${num}`) &&
         (cell.cell[1] === "8" ? darkCastlLong : whiteCastlLong) &&
-        isPiecesFirstLineLong;
+        isPiecesFirstLineLong &&
+        !isKingAttacked(
+          { cell: `c${num}`, available: false, piece: null },
+          board,
+          color
+        ) &&
+        !isKingAttacked(
+          { cell: `d${num}`, available: false, piece: null },
+          board,
+          color
+        ) &&
+        !isKingAttacked(
+          { cell: `e${num}`, available: false, piece: null },
+          board,
+          color
+        );
       isCastleShort =
         (c.cell === `h${num}` || c.cell === `g${num}`) &&
         (cell.cell[1] === "8" ? darkCastlShort : whiteCastlShort) &&
-        isPiecesFirstLineShort;
+        isPiecesFirstLineShort &&
+        !isKingAttacked(
+          { cell: `e${num}`, available: false, piece: null },
+          board,
+          color
+        ) &&
+        !isKingAttacked(
+          { cell: `f${num}`, available: false, piece: null },
+          board,
+          color
+        ) &&
+        !isKingAttacked(
+          { cell: `g${num}`, available: false, piece: null },
+          board,
+          color
+        );
     }
     if (
       ((isNextNums || isPrevNums || isNums) &&
