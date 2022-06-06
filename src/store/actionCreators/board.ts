@@ -24,6 +24,14 @@ export function potentialBoard(
   ];
   return res;
 }
+export function getKingPos(board: cell[]) {
+  let res: any = { dark: null, white: null };
+  board.forEach((c) => {
+    if (c.piece === pieces.KING_DARK) res.dark = c;
+    if (c.piece === pieces.KING_WHITE) res.white = c;
+  });
+  return res;
+}
 export function isGameOver(
   board: cell[],
   turn: "WHITE" | "DARK",

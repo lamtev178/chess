@@ -42,7 +42,7 @@ interface EndGameAction {
 }
 interface isCastlePossible {
   type: BoardActionTypes.IS_CASTLE;
-  payload: "h1" | "a1" | "a8" | "h8" | "e8" | "e1";
+  payload: string;
 }
 interface Castle {
   type: BoardActionTypes.CASTLE;
