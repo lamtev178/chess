@@ -44,7 +44,27 @@ export function king(
   whiteCastlShort?: boolean
 ): string[] {
   let res: string[] = [];
+  let isPiecesFirstLineLong: boolean;
+  let isPiecesFirstLineShort: boolean;
+  if (whiteCastlLong || whiteCastlShort || darkCastlLong || darkCastlShort) {
+    const num = cell.cell[1] === "8" ? "8" : "1";
+    let fLine = false;
+    let gLine = false;
+    let bLine = false;
+    let cLine = false;
+    let dLine = false;
+    board.forEach((c) => {
+      if (c.cell === `f${num}` && c.piece === null) fLine = true;
+      if (c.cell === `g${num}` && c.piece === null) gLine = true;
+      if (c.cell === `b${num}` && c.piece === null) bLine = true;
+      if (c.cell === `c${num}` && c.piece === null) cLine = true;
+      if (c.cell === `d${num}` && c.piece === null) dLine = true;
+    });
+    isPiecesFirstLineLong = bLine && cLine && dLine;
+    isPiecesFirstLineShort = fLine && gLine;
+  }
   board.forEach((c) => {
+    const num = cell.cell[1] === "8" ? "8" : "1";
     const isNextNums: boolean = c.cell[1] === +cell.cell[1] + 1 + "";
     const isNums: boolean = c.cell[1] === cell.cell[1];
     const isPrevNums: boolean = c.cell[1] === +cell.cell[1] - 1 + "";
@@ -57,55 +77,46 @@ export function king(
     const isPieceColor: boolean = c.piece?.split("_")[1] !== color;
     let isCastleLong;
     let isCastleShort;
-    if (whiteCastlLong || whiteCastlShort || darkCastlLong || darkCastlShort) {
-      const num = cell.cell[1] === "8" ? "8" : "1";
-      const firstLine = rook(cell, board, color);
-      const isPiecesFirstLineShort =
-        firstLine.indexOf(`f${num}`) !== -1 &&
-        firstLine.indexOf(`g${num}`) !== -1;
-      const isPiecesFirstLineLong =
-        firstLine.indexOf(`b${num}`) !== -1 &&
-        firstLine.indexOf(`c${num}`) !== -1 &&
-        firstLine.indexOf(`d${num}`) !== -1;
-      isCastleLong =
-        (c.cell === `a${num}` || c.cell === `c${num}`) &&
-        (cell.cell[1] === "8" ? darkCastlLong : whiteCastlLong) &&
-        isPiecesFirstLineLong &&
-        !isKingAttacked(
-          { cell: `c${num}`, available: false, piece: null },
-          board,
-          color
-        ) &&
-        !isKingAttacked(
-          { cell: `d${num}`, available: false, piece: null },
-          board,
-          color
-        ) &&
-        !isKingAttacked(
-          { cell: `e${num}`, available: false, piece: null },
-          board,
-          color
-        );
-      isCastleShort =
-        (c.cell === `h${num}` || c.cell === `g${num}`) &&
-        (cell.cell[1] === "8" ? darkCastlShort : whiteCastlShort) &&
-        isPiecesFirstLineShort &&
-        !isKingAttacked(
-          { cell: `e${num}`, available: false, piece: null },
-          board,
-          color
-        ) &&
-        !isKingAttacked(
-          { cell: `f${num}`, available: false, piece: null },
-          board,
-          color
-        ) &&
-        !isKingAttacked(
-          { cell: `g${num}`, available: false, piece: null },
-          board,
-          color
-        );
-    }
+    isCastleLong =
+      (whiteCastlLong || darkCastlLong) &&
+      (c.cell === `a${num}` || c.cell === `c${num}`) &&
+      (cell.cell[1] === "8" ? darkCastlLong : whiteCastlLong) &&
+      isPiecesFirstLineLong &&
+      !isKingAttacked(
+        { cell: `c${num}`, available: false, piece: null },
+        board,
+        color
+      ) &&
+      !isKingAttacked(
+        { cell: `d${num}`, available: false, piece: null },
+        board,
+        color
+      ) &&
+      !isKingAttacked(
+        { cell: `e${num}`, available: false, piece: null },
+        board,
+        color
+      );
+    isCastleShort =
+      (whiteCastlShort || darkCastlLong) &&
+      (c.cell === `h${num}` || c.cell === `g${num}`) &&
+      (cell.cell[1] === "8" ? darkCastlShort : whiteCastlShort) &&
+      isPiecesFirstLineShort &&
+      !isKingAttacked(
+        { cell: `e${num}`, available: false, piece: null },
+        board,
+        color
+      ) &&
+      !isKingAttacked(
+        { cell: `f${num}`, available: false, piece: null },
+        board,
+        color
+      ) &&
+      !isKingAttacked(
+        { cell: `g${num}`, available: false, piece: null },
+        board,
+        color
+      );
     if (
       ((isNextNums || isPrevNums || isNums) &&
         (isLine || isNextLine || isPrevLine) &&

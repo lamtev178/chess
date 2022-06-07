@@ -390,8 +390,20 @@ export const boardReducer = (
       )
         return {
           ...store,
-          whiteCastleShort: false,
-          whiteCastleLong: false,
+          whiteCastleShort:
+            action.payload === "whiteCastleShort"
+              ? false
+              : store.whiteCastleShort,
+          whiteCastleLong:
+            action.payload === "whiteCastleShort"
+              ? false
+              : store.whiteCastleLong,
+          darkCastleLong:
+            action.payload === "darkCastleShort" ? false : store.darkCastleLong,
+          darkCastleShort:
+            action.payload === "darkCastleShort"
+              ? false
+              : store.darkCastleShort,
           board: [
             ...store.board.map((c: cell) => {
               if (c.cell === `h${num}` || c.cell === `e${num}`) {
@@ -419,8 +431,18 @@ export const boardReducer = (
       )
         return {
           ...store,
-          darkCastleLong: false,
-          darkCastleShort: false,
+          whiteCastleShort:
+            action.payload === "whiteCastleLong"
+              ? false
+              : store.whiteCastleShort,
+          whiteCastleLong:
+            action.payload === "whiteCastleLong"
+              ? false
+              : store.whiteCastleLong,
+          darkCastleLong:
+            action.payload === "darkCastleLong" ? false : store.darkCastleLong,
+          darkCastleShort:
+            action.payload === "darkCastleLong" ? false : store.darkCastleShort,
           board: [
             ...store.board.map((c: cell) => {
               if (c.cell === `a${num}` || c.cell === `e${num}`) {

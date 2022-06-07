@@ -16,6 +16,31 @@ import { queenMove } from "./queen";
 export const restart = () => (dispatch: Dispatch<boardAction>) => {
   dispatch({ type: BoardActionTypes.RESTART });
 };
+export const game =
+  (board: cell[], turn: string) => (dispatch: Dispatch<boardAction>) => {
+    const piece: any = turn === "white" ? "DARK" : "WHITE";
+    const oppositColor = piece === "WHITE" ? "DARK" : "WHITE";
+    let endOfGame = isGameOver(
+      board,
+      oppositColor,
+      getKingPos(board).dark,
+      getKingPos(board).white
+    );
+    if (endOfGame !== GameStatus.PLAYING)
+      dispatch({ type: BoardActionTypes.END_OF_GAME, payload: endOfGame });
+    if (
+      isKingAttacked(
+        piece === "WHITE" ? getKingPos(board).dark : getKingPos(board).white,
+        board,
+        oppositColor
+      )
+    ) {
+      dispatch({
+        type: BoardActionTypes.CHECK,
+        payload: piece === "WHITE" ? pieces.KING_DARK : pieces.KING_WHITE,
+      });
+    } else dispatch({ type: BoardActionTypes.CHECK, payload: false });
+  };
 export const dispatchPieceisSelected =
   (board: cell[], piece: pieces) => (dispatch: Dispatch<boardAction>) => {
     let res: cell[] = [];
@@ -86,29 +111,7 @@ export const movePiece =
           return c;
         }),
       ];
-      const piece: any = formerCell.piece?.split("_")[1];
-      const oppositColor = piece === "WHITE" ? "DARK" : "WHITE";
-      let endOfGame = isGameOver(
-        res,
-        oppositColor,
-        getKingPos(res).dark,
-        getKingPos(res).white
-      );
-      if (endOfGame !== GameStatus.PLAYING)
-        dispatch({ type: BoardActionTypes.END_OF_GAME, payload: endOfGame });
       dispatch({ type: BoardActionTypes.MOVE_PIECE, payload: res });
-      if (
-        isKingAttacked(
-          piece === "WHITE" ? getKingPos(res).dark : getKingPos(res).white,
-          res,
-          oppositColor
-        )
-      ) {
-        dispatch({
-          type: BoardActionTypes.CHECK,
-          payload: piece === "WHITE" ? pieces.KING_DARK : pieces.KING_WHITE,
-        });
-      } else dispatch({ type: BoardActionTypes.CHECK, payload: false });
     }
   };
 
