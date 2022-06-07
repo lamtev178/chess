@@ -2,7 +2,9 @@ import React, { FC, useState } from "react";
 import { useActoins } from "../hooks/useActions";
 import { useTypedSelector } from "../hooks/usedTypeSelector";
 import { cell, GameStatus } from "../types/board";
+import Modal from "./Modal";
 import Cell from "./Cell";
+import { pieces } from "../types/pieces";
 
 const Board: FC = () => {
   const {
@@ -13,12 +15,17 @@ const Board: FC = () => {
     darkCastleShort,
     whiteCastleLong,
     whiteCastleShort,
+    turn,
+    choosePiece,
   } = useTypedSelector((store) => store.board);
-  const turn = useTypedSelector<"white" | "dark">((store) => store.board.turn);
-  const { clickOnFigure, movePiece, restart } = useActoins();
+  const { clickOnFigure, movePiece, restart, dispatchPieceisSelected } =
+    useActoins();
   const [active, setActive] = useState<cell | null>(null);
   const [formerCell, setFormerCell] = useState<cell | null>(null);
   const arr = ["a", "c", "e", "g"];
+  function pieceIsSelected(piece: pieces) {
+    dispatchPieceisSelected(board, piece);
+  }
   function handleClick(cell: cell) {
     setActive(cell);
     if (cell.available === true) movePiece(cell, board, formerCell!);
@@ -36,6 +43,14 @@ const Board: FC = () => {
   }
   return (
     <div className="flex board">
+      {choosePiece ? (
+        <Modal
+          color={turn === "white" ? "dark" : "white"}
+          onClick={pieceIsSelected}
+        />
+      ) : (
+        <></>
+      )}
       {board.map((cell: cell) => (
         <Cell
           key={cell.cell}

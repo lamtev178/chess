@@ -20,6 +20,7 @@ export const enum BoardActionTypes {
   CHANGE_TURN = "CHANGE_TURN",
   CLICK_ON_FIGURE = "CLICK_ON_FIGURE",
   END_OF_GAME = "END_OF_GAME",
+  CHOOSE_PIECE = "CHOOSE_PIECE",
 }
 interface ChangeTurn {
   type: BoardActionTypes.CHANGE_TURN;
@@ -27,6 +28,10 @@ interface ChangeTurn {
 }
 interface Restart {
   type: BoardActionTypes.RESTART;
+}
+interface choosePiece {
+  type: BoardActionTypes.CHOOSE_PIECE;
+  payload?: cell[];
 }
 interface MovePieceAction {
   type: BoardActionTypes.MOVE_PIECE;
@@ -64,4 +69,5 @@ export type boardAction =
   | ClickOnFigure
   | EndGameAction
   | Restart
-  | Castle;
+  | Castle
+  | choosePiece;

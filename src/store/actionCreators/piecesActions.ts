@@ -16,6 +16,21 @@ import { queenMove } from "./queen";
 export const restart = () => (dispatch: Dispatch<boardAction>) => {
   dispatch({ type: BoardActionTypes.RESTART });
 };
+export const dispatchPieceisSelected =
+  (board: cell[], piece: pieces) => (dispatch: Dispatch<boardAction>) => {
+    let res: cell[] = [];
+    res = [
+      ...board.map((c) => {
+        if (
+          (c.cell[1] === "8" && c.piece === pieces.PAWN_WHITE) ||
+          (c.cell[1] === "1" && c.piece === pieces.PAWN_DARK)
+        )
+          return { ...c, piece: piece };
+        return c;
+      }),
+    ];
+    dispatch({ type: BoardActionTypes.CHOOSE_PIECE, payload: res });
+  };
 export const movePiece =
   (cell: cell, board: cell[], formerCell: cell) =>
   (dispatch: Dispatch<boardAction>) => {
@@ -53,6 +68,10 @@ export const movePiece =
     )
       dispatch({ type: BoardActionTypes.CASTLE, payload: "darkCastleLong" });
     else {
+      if (formerCell.cell[1] === "7" && formerCell.piece === pieces.PAWN_WHITE)
+        dispatch({ type: BoardActionTypes.CHOOSE_PIECE });
+      if (formerCell.cell[1] === "2" && formerCell.piece === pieces.PAWN_DARK)
+        dispatch({ type: BoardActionTypes.CHOOSE_PIECE });
       res = [
         ...board.map((c) => {
           if (

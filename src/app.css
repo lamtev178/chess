@@ -69,6 +69,10 @@ body {
   padding-top: 30px;
   z-index: 3;
 }
+.modal img{
+  height: 85px;
+  width: 85px;
+}
 .board__modal .btn{
   margin-top: 15px;
 }

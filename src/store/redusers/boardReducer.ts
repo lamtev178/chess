@@ -13,10 +13,12 @@ interface initialStateProps {
   darkCastleShort: boolean;
   isKingAttacked: false | pieces.KING_WHITE | pieces.KING_DARK;
   turn: "white" | "dark";
+  choosePiece: boolean;
   board: cell[];
 }
 const initialState: initialStateProps = {
   end: GameStatus.PLAYING,
+  choosePiece: false,
   whiteCastleLong: true,
   whiteCastleShort: true,
   darkCastleLong: true,
@@ -446,6 +448,12 @@ export const boardReducer = (
       return { ...store, isKingAttacked: action.payload };
     case BoardActionTypes.RESTART:
       return initialState;
+    case BoardActionTypes.CHOOSE_PIECE:
+      return {
+        ...store,
+        choosePiece: !store.choosePiece,
+        board: action.payload || store.board,
+      };
     default:
       return store;
   }
