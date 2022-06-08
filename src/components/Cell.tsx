@@ -1,55 +1,57 @@
-import React, { DragEvent, FC } from "react";
+import React, { DragEvent, FC, MouseEvent } from "react";
 import { cell } from "../types/board";
 import { pieces } from "../types/pieces";
 interface CellProps {
   cell: cell;
   color: string;
-  active: cell | null;
   onClick: (cell: cell) => void;
   isKingAttacked: false | pieces.KING_DARK | pieces.KING_WHITE;
-  onDragStart: (e: DragEvent<HTMLImageElement>, cell: cell) => void;
-  onDragOver: (e: DragEvent<HTMLDivElement>) => void;
-  onDrop: (e: DragEvent<HTMLImageElement>) => void;
-  onDragLeave: (e: DragEvent<HTMLImageElement>) => void;
+  onMouseDown: (
+    e: MouseEvent<HTMLImageElement>,
+    cell: cell,
+    img: string
+  ) => void;
+  mouseUp: (e: MouseEvent<HTMLDivElement>, cell: cell) => void;
+  onMouseLeave: (e: MouseEvent<HTMLDivElement>) => void;
+  onMouseOver: (e: MouseEvent<HTMLDivElement>, cell: cell) => void;
 }
 const Cell: FC<CellProps> = ({
   cell,
   color,
-  active,
   onClick,
   isKingAttacked,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragLeave,
+  onMouseDown,
+  mouseUp,
+  onMouseLeave,
+  onMouseOver,
 }) => {
   const img = cell.piece === null ? "" : require(`../pieces/${cell.piece}.png`);
   return (
     <div
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      onDragLeave={onDragLeave}
+      onMouseUp={(e: MouseEvent<HTMLDivElement>) => mouseUp(e, cell)}
+      onMouseLeave={(e: MouseEvent<HTMLDivElement>) => onMouseLeave(e)}
+      onMouseOver={(e: MouseEvent<HTMLDivElement>) => onMouseOver(e, cell)}
+      onDragStart={(e) => e.preventDefault()}
+      id={cell.cell}
       className={
         (color === "white" ? "cell-white " : "cell-dark ") +
         (cell.available && img !== "" ? "attacked " : "") +
-        (active?.cell === cell.cell ? " active " : "") +
         (cell.piece === isKingAttacked && color === "white"
           ? " kingIsAttacked-white"
           : "") +
         (cell.piece === isKingAttacked && color !== "white"
           ? " kingIsAttacked-dark"
           : "") +
-        (cell.piece === isKingAttacked && active?.cell === cell.cell
-          ? " kingIsAttacked-active"
-          : "") +
         (cell.available && img === "" ? " cell-available" : "")
       }
       onClick={() => onClick(cell)}
     >
+      {cell.cell === "a1" ? <div id="secret" /> : null}
       {img === "" ? null : (
         <img
-          onDragStart={(e) => onDragStart(e, cell)}
-          draggable
+          onMouseDown={(e: MouseEvent<HTMLImageElement>) => {
+            onMouseDown(e, cell, img);
+          }}
           src={img}
           alt={cell.cell}
         />

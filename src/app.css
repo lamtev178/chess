@@ -33,6 +33,13 @@ body {
   height: 85px;
   cursor: grab;
 }
+#draggbleImg{
+  position: absolute;
+  width: 85px;
+  height: 85px;
+  cursor: grabbing;
+  z-index: 100;
+}
 .app {
   height: 100vh;
   display: flex;
@@ -47,7 +54,23 @@ body {
   height: 15px;
   background-color: #937535;
 }
-.attacked::after {
+.draggble > img{
+  opacity: 0.5;
+}
+.secret{
+  width:0px;
+  height:0px;
+  position: absolute;
+}
+.cell-available:before,  .attacked:before{
+  z-index: 1000;
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+}
+.attacked:after {
   position: absolute;
   content: "";
   width: 90px;
