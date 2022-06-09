@@ -47,15 +47,20 @@ export const game =
     } else dispatch({ type: BoardActionTypes.CHECK, payload: false });
   };
 export const dispatchPieceisSelected =
-  (board: cell[], piece: pieces) => (dispatch: Dispatch<boardAction>) => {
+  (board: cell[], piece: pieces, cell: cell | null, formerCell: cell | null) =>
+  (dispatch: Dispatch<boardAction>) => {
+    board = [
+      ...board.map((c) =>
+        c.available === true ? { ...c, available: false } : c
+      ),
+    ];
     let res: cell[] = [];
     res = [
       ...board.map((c) => {
-        if (
-          (c.cell[1] === "8" && c.piece === pieces.PAWN_WHITE) ||
-          (c.cell[1] === "1" && c.piece === pieces.PAWN_DARK)
-        )
-          return { ...c, piece: piece };
+        if (formerCell && c.cell === formerCell.cell)
+          return { ...c, piece: null };
+        if (cell && c.cell === cell.cell)
+          return { ...c, piece: piece, available: false };
         return c;
       }),
     ];
@@ -99,9 +104,9 @@ export const movePiece =
       dispatch({ type: BoardActionTypes.CASTLE, payload: "darkCastleLong" });
     else {
       if (formerCell.cell[1] === "7" && formerCell.piece === pieces.PAWN_WHITE)
-        dispatch({ type: BoardActionTypes.CHOOSE_PIECE });
+        return dispatch({ type: BoardActionTypes.CHOOSE_PIECE, payload: cell });
       if (formerCell.cell[1] === "2" && formerCell.piece === pieces.PAWN_DARK)
-        dispatch({ type: BoardActionTypes.CHOOSE_PIECE });
+        return dispatch({ type: BoardActionTypes.CHOOSE_PIECE, payload: cell });
       res = [
         ...board.map((c) => {
           if (

@@ -7,7 +7,6 @@ export interface cell {
 }
 export interface fetchBoardInterface {
   board: cell[];
-  end: GameStatus;
   darkCastleLong: boolean;
   darkCastleShort: boolean;
   whiteCastleLong: boolean;
@@ -45,7 +44,7 @@ interface Restart {
 }
 interface choosePiece {
   type: BoardActionTypes.CHOOSE_PIECE;
-  payload?: cell[];
+  payload: cell | cell[];
 }
 interface MovePieceAction {
   type: BoardActionTypes.MOVE_PIECE;

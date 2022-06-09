@@ -13,7 +13,7 @@ interface initialStateProps {
   darkCastleShort: boolean;
   isKingAttacked: false | pieces.KING_WHITE | pieces.KING_DARK;
   turn: "white" | "dark";
-  choosePiece: boolean;
+  choosePiece: false | cell;
   board: cell[];
 }
 const initialState: initialStateProps = {
@@ -475,7 +475,6 @@ export const boardReducer = (
         ...store,
         board: action.payload.board,
         turn: action.payload.turn,
-        end: action.payload.end,
         darkCastleLong: action.payload.darkCastleLong,
         darkCastleShort: action.payload.darkCastleShort,
         whiteCastleLong: action.payload.whiteCastleLong,
@@ -484,8 +483,13 @@ export const boardReducer = (
     case BoardActionTypes.CHOOSE_PIECE:
       return {
         ...store,
-        choosePiece: !store.choosePiece,
-        board: action.payload || store.board,
+        choosePiece: Array.isArray(action.payload) ? false : action.payload,
+        turn: Array.isArray(action.payload)
+          ? store.turn === "white"
+            ? "dark"
+            : "white"
+          : store.turn,
+        board: Array.isArray(action.payload) ? action.payload : store.board,
       };
     default:
       return store;

@@ -39,10 +39,17 @@ const Board: FC = () => {
   const [formerCell, setFormerCell] = useState<cell | null>(null);
   const arr = ["a", "c", "e", "g"];
   function pieceIsSelected(piece: pieces) {
-    dispatchPieceisSelected(board, piece);
+    dispatchPieceisSelected(
+      board,
+      piece,
+      choosePiece ? choosePiece : null,
+      choosePiece ? formerCell : null
+    );
+    console.log("piece", choosePiece ? choosePiece : null);
   }
   useEffect(() => {
-    const newSocket = io("https://la-chess-server.herokuapp.com");
+    const newSocket = io("https://la-chess-server.herokuapp.com/");
+    //const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
@@ -62,7 +69,6 @@ const Board: FC = () => {
     if (socket !== null)
       socket.emit("board", {
         board: board,
-        end: end,
         darkCastleLong: darkCastleLong,
         darkCastleShort: darkCastleShort,
         whiteCastleLong: whiteCastleLong,
@@ -148,14 +154,7 @@ const Board: FC = () => {
   ));
   return (
     <div className="flex board" id="board" onMouseMove={onMouseMove}>
-      {choosePiece ? (
-        <Modal
-          color={turn === "white" ? "dark" : "white"}
-          onClick={pieceIsSelected}
-        />
-      ) : (
-        <></>
-      )}
+      {choosePiece ? <Modal color={turn} onClick={pieceIsSelected} /> : <></>}
       {localStorage.color === "dark" ? boardjsx.reverse() : boardjsx}
       {end !== GameStatus.PLAYING ? (
         <div>
