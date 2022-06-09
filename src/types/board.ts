@@ -5,6 +5,15 @@ export interface cell {
   piece: pieces | null;
   available: boolean;
 }
+export interface fetchBoardInterface {
+  board: cell[];
+  end: GameStatus;
+  darkCastleLong: boolean;
+  darkCastleShort: boolean;
+  whiteCastleLong: boolean;
+  whiteCastleShort: boolean;
+  turn: "white" | "dark";
+}
 export const enum GameStatus {
   PLAYING = "PLAYING",
   DRAW = "DRAW",
@@ -21,10 +30,15 @@ export const enum BoardActionTypes {
   CLICK_ON_FIGURE = "CLICK_ON_FIGURE",
   END_OF_GAME = "END_OF_GAME",
   CHOOSE_PIECE = "CHOOSE_PIECE",
+  FETCHED_BOARD = "FETCHED_BOARD",
 }
 interface ChangeTurn {
   type: BoardActionTypes.CHANGE_TURN;
   payload: string;
+}
+interface fetchBoard {
+  type: BoardActionTypes.FETCHED_BOARD;
+  payload: fetchBoardInterface;
 }
 interface Restart {
   type: BoardActionTypes.RESTART;
@@ -70,4 +84,5 @@ export type boardAction =
   | EndGameAction
   | Restart
   | Castle
-  | choosePiece;
+  | choosePiece
+  | fetchBoard;

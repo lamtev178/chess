@@ -470,6 +470,17 @@ export const boardReducer = (
       return { ...store, isKingAttacked: action.payload };
     case BoardActionTypes.RESTART:
       return initialState;
+    case BoardActionTypes.FETCHED_BOARD:
+      return {
+        ...store,
+        board: action.payload.board,
+        turn: action.payload.turn,
+        end: action.payload.end,
+        darkCastleLong: action.payload.darkCastleLong,
+        darkCastleShort: action.payload.darkCastleShort,
+        whiteCastleLong: action.payload.whiteCastleLong,
+        whiteCastleShort: action.payload.whiteCastleShort,
+      };
     case BoardActionTypes.CHOOSE_PIECE:
       return {
         ...store,

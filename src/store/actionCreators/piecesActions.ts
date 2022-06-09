@@ -3,6 +3,7 @@ import {
   boardAction,
   BoardActionTypes,
   cell,
+  fetchBoardInterface,
   GameStatus,
 } from "../../types/board";
 import { pieces } from "../../types/pieces";
@@ -16,6 +17,10 @@ import { queenMove } from "./queen";
 export const restart = () => (dispatch: Dispatch<boardAction>) => {
   dispatch({ type: BoardActionTypes.RESTART });
 };
+export const fetchBoard =
+  (board: fetchBoardInterface) => (dispatch: Dispatch<boardAction>) => {
+    dispatch({ type: BoardActionTypes.FETCHED_BOARD, payload: board });
+  };
 export const game =
   (board: cell[], turn: string) => (dispatch: Dispatch<boardAction>) => {
     const piece: any = turn === "white" ? "DARK" : "WHITE";
@@ -132,7 +137,11 @@ export const clickOnFigure =
       ),
     ];
     const color = cell.piece?.split("_")[1];
-    if (color === "WHITE" && turn === "white") {
+    if (
+      color === "WHITE" &&
+      turn === "white" &&
+      localStorage.color === "white"
+    ) {
       switch (cell.piece) {
         case pieces.KING_WHITE: {
           return dispatch({
@@ -210,7 +219,7 @@ export const clickOnFigure =
         }
       }
     }
-    if (color === "DARK" && turn === "dark") {
+    if (color === "DARK" && turn === "dark" && localStorage.color === "dark") {
       switch (cell.piece) {
         case pieces.KING_DARK: {
           return dispatch({
