@@ -42,7 +42,7 @@ const Board: FC = () => {
     dispatchPieceisSelected(board, piece);
   }
   useEffect(() => {
-    const newSocket = io("http://localhost:3030");
+    const newSocket = io("https://la-chess-server.herokuapp.com");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
