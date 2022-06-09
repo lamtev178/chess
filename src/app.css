@@ -5,7 +5,7 @@ body {
 }
 .cell-dark,
 .cell-white {
-  min-width: 100px;
+  width: 100px;
   height: 100px;
   display: flex;
   justify-content: center;
@@ -129,4 +129,88 @@ body {
 }
 .kingIsAttacked-active{
   background: radial-gradient(#333, #d5b46d);
+}
+@media (max-width: 1200px) {
+  .board{
+    width: 600px;
+  }
+  .attacked:after {
+    width: 60px;
+    height: 60px;
+  }
+  .cell-dark, .cell-white{
+    width: 75px;
+    height: 75px;
+  }
+  .cell-dark img, .cell-white img {
+  width: 55px;
+  height: 55px;
+  }
+  #draggbleImg{
+    width: 55px;
+    height: 55px;
+  }
+  .cell-available:before,  .attacked:before{
+    width: 75px;
+    height: 75px;
+  }
+}
+@media (max-width: 900px) {
+  .cell-available:after {
+    width: 10px;
+    height: 10px;
+  }
+  .board{
+    width: 400px;
+  }
+  .attacked:after {
+    width: 40px;
+    height: 40px;
+  }
+  .cell-dark, .cell-white{
+    width: 50px;
+    height: 50px;
+  }
+  .cell-available:before,  .attacked:before{
+    width: 50px;
+    height: 50px;
+  }
+  .cell-dark img, .cell-white img {
+  width: 35px;
+  height: 35px;
+  }
+  #draggbleImg{
+    width: 35px;
+    height: 35px;
+  }
+}
+@media (max-width: 650px) {
+  .cell-available:after {
+    width: 5px;
+    height: 5px;
+  }
+  .attacked:after {
+    width: 8%;
+    height: 4vh;
+  }
+  .board{
+    width: 100vw;
+    height: 48vh;
+  }
+  .cell-dark, .cell-white{
+    width: 12.5%;
+    height: 6vh;
+  }
+  .cell-available:before,  .attacked:before{
+    width: 12.5%;
+    height: 6vh;
+  }
+  .cell-dark img, .cell-white img {
+  width: 80%;
+  height: 80%;
+  }
+  #draggbleImg{
+    width: 80%;
+    height: 80%;
+  }
 }

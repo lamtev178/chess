@@ -48,18 +48,15 @@ const Board: FC = () => {
     console.log("piece", choosePiece ? choosePiece : null);
   }
   useEffect(() => {
-    const newSocket = io("https://la-chess-server.herokuapp.com/");
-    //const newSocket = io("http://localhost:3030/");
+    //const newSocket = io("https://la-chess-server.herokuapp.com/");
+    const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
     if (socket) {
       socket!.on("connect", () => console.log(socket!.connected, socket.id));
       socket!.on("board", (arg: fetchBoardInterface) => fetchBoard(arg));
-      socket.once("get color", (color: string) => {
-        console.log("get color", color);
-        localStorage.color = color;
-      });
+      socket.once("get color", (color: string) => (localStorage.color = color));
       socket.once("firstFetch", (arg: fetchBoardInterface) => fetchBoard(arg));
     }
   }, [socket]);
