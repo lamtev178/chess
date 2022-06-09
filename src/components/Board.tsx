@@ -5,6 +5,7 @@ import { cell, GameStatus } from "../types/board";
 import Modal from "./Modal";
 import Cell from "./Cell";
 import { pieces } from "../types/pieces";
+import tom from "../sounds/tom.wav";
 
 const Board: FC = () => {
   const {
@@ -18,6 +19,11 @@ const Board: FC = () => {
     turn,
     choosePiece,
   } = useTypedSelector((store) => store.board);
+  const { Howl } = require("howler");
+  var sound = new Howl({
+    src: tom,
+    html5: true,
+  });
   const imgDrag = useRef<HTMLImageElement | null>(null);
   const [drag, setDrag] = useState<boolean | string>(false);
   const { clickOnFigure, movePiece, restart, dispatchPieceisSelected, game } =
@@ -29,6 +35,7 @@ const Board: FC = () => {
   }
   useEffect(() => {
     game(board, turn);
+    sound.play();
   }, [turn]);
   function handleClick(cell: cell) {
     if (cell.available === true) movePiece(cell, board, formerCell!);
