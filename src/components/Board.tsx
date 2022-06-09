@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, DragEvent, MouseEvent } from "react";
+import React, { FC, useState, useEffect, MouseEvent, useRef } from "react";
 import { useActoins } from "../hooks/useActions";
 import { useTypedSelector } from "../hooks/usedTypeSelector";
 import { cell, GameStatus } from "../types/board";
@@ -18,6 +18,7 @@ const Board: FC = () => {
     turn,
     choosePiece,
   } = useTypedSelector((store) => store.board);
+  const imgDrag = useRef<HTMLImageElement | null>(null);
   const [drag, setDrag] = useState<boolean | string>(false);
   const { clickOnFigure, movePiece, restart, dispatchPieceisSelected, game } =
     useActoins();
@@ -28,11 +29,8 @@ const Board: FC = () => {
   }
   useEffect(() => {
     game(board, turn);
-  }, [board]);
+  }, [turn]);
   function handleClick(cell: cell) {
-    document
-      .getElementById(formerCell !== null ? formerCell.cell : "")
-      ?.classList.remove("active");
     if (cell.available === true) movePiece(cell, board, formerCell!);
     else
       clickOnFigure(
@@ -47,32 +45,23 @@ const Board: FC = () => {
     setFormerCell(cell);
   }
   function moveAt(pageX: any, pageY: any) {
-    const newImg = document.getElementById("draggbleImg");
-    newImg!.style.left = pageX - newImg!.offsetWidth / 2 + "px";
-    newImg!.style.top = pageY - newImg!.offsetHeight / 2 + "px";
+    imgDrag.current!.style.left =
+      pageX - imgDrag.current!.offsetWidth / 2 + "px";
+    imgDrag.current!.style.top =
+      pageY - imgDrag.current!.offsetHeight / 2 + "px";
   }
   function onMouseMove(e: MouseEvent<HTMLDivElement>) {
     if (drag) moveAt(e.pageX, e.pageY);
   }
-  function onMouseDownHandler(
+  async function onMouseDownHandler(
     e: MouseEvent<HTMLImageElement>,
     cell: cell,
     img: string
   ) {
     setFormerCell(cell);
-    setDrag(cell.cell);
-    e.preventDefault();
-    const newImg = new Image();
-    newImg.src = img;
-    document.getElementById("secret")!.append(newImg);
-    console.log("DOWN", formerCell !== null ? formerCell.cell : "");
-
-    document
-      .getElementById(formerCell !== null ? formerCell.cell : "")
-      ?.classList.remove("active");
-    document.getElementById(cell.cell)!.classList.add("draggble", "active");
-    newImg.id = "draggbleImg";
+    await setDrag(img);
     moveAt(e.pageX, e.pageY);
+    e.preventDefault();
     clickOnFigure(
       cell,
       board,
@@ -84,11 +73,7 @@ const Board: FC = () => {
     );
   }
   function mouseUpHandler(e: MouseEvent<HTMLDivElement>, cell: cell) {
-    document
-      .getElementById(formerCell !== null ? formerCell.cell : "")
-      ?.classList.remove("draggble");
     setDrag(false);
-    document.getElementById("draggbleImg")?.remove();
     if (cell.available === true) movePiece(cell, board, formerCell!);
     (e.target as Element).classList.remove("pieceHover");
   }
@@ -113,6 +98,8 @@ const Board: FC = () => {
       {board
         .map((cell: cell) => (
           <Cell
+            drag={drag}
+            imgDrag={imgDrag}
             key={cell.cell}
             cell={cell}
             onClick={handleClick}
@@ -120,6 +107,7 @@ const Board: FC = () => {
             onMouseLeave={onMouseLeaveHandler}
             mouseUp={mouseUpHandler}
             onMouseOver={onMouseOverHandler}
+            formerCell={formerCell}
             color={
               (arr.indexOf(cell.cell[0]) === -1 && +cell.cell[1] % 2 === 0) ||
               (arr.indexOf(cell.cell[0]) !== -1 && +cell.cell[1] % 2 !== 0)
