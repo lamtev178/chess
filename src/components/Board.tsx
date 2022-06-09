@@ -48,8 +48,8 @@ const Board: FC = () => {
     console.log("piece", choosePiece ? choosePiece : null);
   }
   useEffect(() => {
-    //const newSocket = io("https://la-chess-server.herokuapp.com/");
-    const newSocket = io("http://localhost:3030/");
+    const newSocket = io("https://la-chess-server.herokuapp.com/");
+    //const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
