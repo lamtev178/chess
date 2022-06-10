@@ -25,6 +25,7 @@ const Board: FC = () => {
     src: tom,
     html5: true,
   });
+
   const imgDrag = useRef<HTMLImageElement | null>(null);
   const [drag, setDrag] = useState<boolean | string>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -45,11 +46,17 @@ const Board: FC = () => {
       choosePiece ? choosePiece : null,
       choosePiece ? formerCell : null
     );
-    console.log("piece", choosePiece ? choosePiece : null);
+    console.log(
+      "piece",
+      board,
+      piece,
+      choosePiece ? choosePiece : null,
+      choosePiece ? formerCell : null
+    );
   }
   useEffect(() => {
-    const newSocket = io("https://la-chess-server.herokuapp.com/");
-    //const newSocket = io("http://localhost:3030/");
+    //const newSocket = io("https://la-chess-server.herokuapp.com/");
+    const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
@@ -85,7 +92,13 @@ const Board: FC = () => {
         whiteCastleLong,
         whiteCastleShort
       );
-    setFormerCell(cell);
+    const isWhiteSelectPiece =
+      cell.cell[1] === "8" && formerCell?.piece === pieces.PAWN_WHITE;
+    const isDarkSelectPiece =
+      cell.cell[1] === "1" && formerCell?.piece === pieces.PAWN_DARK;
+    console.log(isWhiteSelectPiece, isDarkSelectPiece, cell, formerCell);
+
+    if (!(isWhiteSelectPiece || isDarkSelectPiece)) setFormerCell(cell);
   }
   function moveAt(pageX: any, pageY: any) {
     imgDrag.current!.style.left =
@@ -143,7 +156,7 @@ const Board: FC = () => {
       color={
         (arr.indexOf(cell.cell[0]) === -1 && +cell.cell[1] % 2 === 0) ||
         (arr.indexOf(cell.cell[0]) !== -1 && +cell.cell[1] % 2 !== 0)
-          ? "black"
+          ? "dark"
           : "white"
       }
       isKingAttacked={isKingAttacked}
