@@ -25,7 +25,6 @@ const Board: FC = () => {
     src: tom,
     html5: true,
   });
-
   const imgDrag = useRef<HTMLImageElement | null>(null);
   const [drag, setDrag] = useState<boolean | string>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -36,6 +35,7 @@ const Board: FC = () => {
     dispatchPieceisSelected,
     game,
     fetchBoard,
+    resign,
   } = useActoins();
   const [formerCell, setFormerCell] = useState<cell | null>(null);
   const arr = ["a", "c", "e", "g"];
@@ -46,27 +46,24 @@ const Board: FC = () => {
       choosePiece ? choosePiece : null,
       choosePiece ? formerCell : null
     );
-    console.log(
-      "piece",
-      board,
-      piece,
-      choosePiece ? choosePiece : null,
-      choosePiece ? formerCell : null
-    );
   }
   useEffect(() => {
-    //const newSocket = io("https://la-chess-server.herokuapp.com/");
-    const newSocket = io("http://localhost:3030/");
+    const newSocket = io("https://la-chess-server.herokuapp.com/");
+    //const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
     if (socket) {
       socket!.on("connect", () => console.log(socket!.connected, socket.id));
       socket!.on("board", (arg: fetchBoardInterface) => fetchBoard(arg));
+      socket!.on("game", (game: GameStatus) => resign(game));
       socket.once("get color", (color: string) => (localStorage.color = color));
       socket.once("firstFetch", (arg: fetchBoardInterface) => fetchBoard(arg));
     }
   }, [socket]);
+  useEffect(() => {
+    if (end !== GameStatus.PLAYING) socket!.emit("endOfGame", end);
+  }, [end]);
   useEffect(() => {
     game(board, turn);
     sound.play();
@@ -96,8 +93,6 @@ const Board: FC = () => {
       cell.cell[1] === "8" && formerCell?.piece === pieces.PAWN_WHITE;
     const isDarkSelectPiece =
       cell.cell[1] === "1" && formerCell?.piece === pieces.PAWN_DARK;
-    console.log(isWhiteSelectPiece, isDarkSelectPiece, cell, formerCell);
-
     if (!(isWhiteSelectPiece || isDarkSelectPiece)) setFormerCell(cell);
   }
   function moveAt(pageX: any, pageY: any) {

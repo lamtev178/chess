@@ -46,6 +46,13 @@ export const game =
       });
     } else dispatch({ type: BoardActionTypes.CHECK, payload: false });
   };
+export const resign =
+  (game: GameStatus) => (dispatch: Dispatch<boardAction>) => {
+    dispatch({
+      type: BoardActionTypes.RESIGN,
+      payload: game,
+    });
+  };
 export const dispatchPieceisSelected =
   (board: cell[], piece: pieces, cell: cell | null, formerCell: cell | null) =>
   (dispatch: Dispatch<boardAction>) => {

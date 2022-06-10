@@ -30,10 +30,15 @@ export const enum BoardActionTypes {
   END_OF_GAME = "END_OF_GAME",
   CHOOSE_PIECE = "CHOOSE_PIECE",
   FETCHED_BOARD = "FETCHED_BOARD",
+  RESIGN = "RESIGN",
 }
 interface ChangeTurn {
   type: BoardActionTypes.CHANGE_TURN;
   payload: string;
+}
+interface Resign {
+  type: BoardActionTypes.RESIGN;
+  payload: GameStatus;
 }
 interface fetchBoard {
   type: BoardActionTypes.FETCHED_BOARD;
@@ -84,4 +89,5 @@ export type boardAction =
   | Restart
   | Castle
   | choosePiece
-  | fetchBoard;
+  | fetchBoard
+  | Resign;

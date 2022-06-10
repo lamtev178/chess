@@ -470,6 +470,8 @@ export const boardReducer = (
       return { ...store, isKingAttacked: action.payload };
     case BoardActionTypes.RESTART:
       return initialState;
+    case BoardActionTypes.RESIGN:
+      return { ...store, end: action.payload };
     case BoardActionTypes.FETCHED_BOARD:
       return {
         ...store,
