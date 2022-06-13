@@ -70,7 +70,7 @@ const Board: FC = () => {
   useEffect(() => {
     game(board, turn);
     sound.play();
-    if (socket !== null)
+    if (socket !== null && localStorage.color !== turn) {
       socket.emit("board", {
         board: board,
         darkCastleLong: darkCastleLong,
@@ -80,6 +80,7 @@ const Board: FC = () => {
         turn,
         moves: [moves[moves.length - 2], moves[moves.length - 1]],
       });
+    }
   }, [turn]);
   function handleRestart() {
     restart();
@@ -131,9 +132,7 @@ const Board: FC = () => {
   }
   function mouseUpHandler(e: MouseEvent<HTMLDivElement>, cell: cell) {
     setDrag(false);
-    if (cell.available === true) {
-      movePiece(cell, board, formerCell!);
-    }
+    if (cell.available === true) movePiece(cell, board, formerCell!);
     (e.target as Element).classList.remove("pieceHover");
   }
   function onMouseOverHandler(e: MouseEvent<HTMLDivElement>, cell: cell) {
@@ -144,12 +143,12 @@ const Board: FC = () => {
   function onMouseLeaveHandler(e: MouseEvent<HTMLDivElement>) {
     (e.target as Element).classList.remove("pieceHover");
   }
-  const boardjsx = board.map((cell: cell) => (
+  const boardjsx = board.map((b: cell) => (
     <Cell
       drag={drag}
       imgDrag={imgDrag}
-      key={cell.cell}
-      cell={cell}
+      key={b.cell}
+      cell={b}
       onClick={handleClick}
       onMouseDown={onMouseDownHandler}
       onMouseLeave={onMouseLeaveHandler}
@@ -157,8 +156,8 @@ const Board: FC = () => {
       onMouseOver={onMouseOverHandler}
       formerCell={formerCell}
       color={
-        (arr.indexOf(cell.cell[0]) === -1 && +cell.cell[1] % 2 === 0) ||
-        (arr.indexOf(cell.cell[0]) !== -1 && +cell.cell[1] % 2 !== 0)
+        (arr.indexOf(b.cell[0]) === -1 && +b.cell[1] % 2 === 0) ||
+        (arr.indexOf(b.cell[0]) !== -1 && +b.cell[1] % 2 !== 0)
           ? "dark"
           : "white"
       }
@@ -168,7 +167,7 @@ const Board: FC = () => {
   return (
     <div className="flex board" id="board" onMouseMove={onMouseMove}>
       {choosePiece ? <Modal color={turn} onClick={pieceIsSelected} /> : <></>}
-      {localStorage.color === "dark" ? boardjsx : boardjsx.reverse()}
+      {localStorage.color === "dark" ? boardjsx.reverse() : boardjsx}
       {end !== GameStatus.PLAYING ? (
         <div>
           <div className="board__modal modal">

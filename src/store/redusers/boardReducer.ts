@@ -18,7 +18,7 @@ interface initialStateProps {
   moves: cell[];
 }
 const board = [];
-for (let i = 1; i < 9; i++) {
+for (let i = 8; i > 0; i--) {
   for (let j = 97; j < 105; j++) {
     const cell: cell = {
       cell: String.fromCharCode(j) + "" + i,
