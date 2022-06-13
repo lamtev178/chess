@@ -12,6 +12,7 @@ export interface fetchBoardInterface {
   whiteCastleLong: boolean;
   whiteCastleShort: boolean;
   turn: "white" | "dark";
+  moves: cell[];
 }
 export const enum GameStatus {
   PLAYING = "PLAYING",
@@ -31,10 +32,15 @@ export const enum BoardActionTypes {
   CHOOSE_PIECE = "CHOOSE_PIECE",
   FETCHED_BOARD = "FETCHED_BOARD",
   RESIGN = "RESIGN",
+  MOVE = "MOVE",
 }
 interface ChangeTurn {
   type: BoardActionTypes.CHANGE_TURN;
   payload: string;
+}
+interface Move {
+  type: BoardActionTypes.MOVE;
+  payload: cell[];
 }
 interface Resign {
   type: BoardActionTypes.RESIGN;
@@ -90,4 +96,5 @@ export type boardAction =
   | Castle
   | choosePiece
   | fetchBoard
-  | Resign;
+  | Resign
+  | Move;

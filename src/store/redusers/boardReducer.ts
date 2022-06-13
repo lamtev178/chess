@@ -15,6 +15,7 @@ interface initialStateProps {
   turn: "white" | "dark";
   choosePiece: false | cell;
   board: cell[];
+  moves: cell[];
 }
 const board = [];
 for (let i = 1; i < 9; i++) {
@@ -60,6 +61,7 @@ const initialState: initialStateProps = {
   isKingAttacked: false,
   turn: "white",
   board: board,
+  moves: [],
 };
 
 export const boardReducer = (
@@ -185,6 +187,8 @@ export const boardReducer = (
       return initialState;
     case BoardActionTypes.RESIGN:
       return { ...store, end: action.payload };
+    case BoardActionTypes.MOVE:
+      return { ...store, moves: store.moves.concat(...action.payload) };
     case BoardActionTypes.FETCHED_BOARD:
       return {
         ...store,
@@ -194,6 +198,7 @@ export const boardReducer = (
         darkCastleShort: action.payload.darkCastleShort,
         whiteCastleLong: action.payload.whiteCastleLong,
         whiteCastleShort: action.payload.whiteCastleShort,
+        moves: action.payload.moves,
       };
     case BoardActionTypes.CHOOSE_PIECE:
       return {

@@ -20,6 +20,7 @@ const Board: FC = () => {
     whiteCastleShort,
     turn,
     choosePiece,
+    moves,
   } = useTypedSelector((store) => store.board);
   var sound = new Howl({
     src: tom,
@@ -48,8 +49,8 @@ const Board: FC = () => {
     );
   }
   useEffect(() => {
-    const newSocket = io("https://la-chess-server.herokuapp.com/");
-    //const newSocket = io("http://localhost:3030/");
+    //const newSocket = io("https://la-chess-server.herokuapp.com/");
+    const newSocket = io("http://localhost:3030/");
     setSocket(newSocket);
   }, []);
   useEffect(() => {
@@ -57,12 +58,14 @@ const Board: FC = () => {
       socket!.on("connect", () => console.log(socket!.connected, socket.id));
       socket!.on("board", (arg: fetchBoardInterface) => fetchBoard(arg));
       socket!.on("game", (game: GameStatus) => resign(game));
+      socket!.on("newGame", () => restart());
       socket.once("get color", (color: string) => (localStorage.color = color));
       socket.once("firstFetch", (arg: fetchBoardInterface) => fetchBoard(arg));
     }
   }, [socket]);
   useEffect(() => {
     if (end !== GameStatus.PLAYING) socket!.emit("endOfGame", end);
+    console.log(moves);
   }, [end]);
   useEffect(() => {
     game(board, turn);
@@ -75,20 +78,23 @@ const Board: FC = () => {
         whiteCastleLong: whiteCastleLong,
         whiteCastleShort: whiteCastleShort,
         turn,
+        moves: [moves[moves.length - 2], moves[moves.length - 1]],
       });
   }, [turn]);
+  function handleRestart() {
+    restart();
+    if (socket !== null) socket.emit("newGame");
+  }
   function handleClick(cell: cell) {
-    if (cell.available === true) movePiece(cell, board, formerCell!);
-    else
-      clickOnFigure(
-        cell,
-        board,
-        turn,
-        darkCastleLong,
-        darkCastleShort,
-        whiteCastleLong,
-        whiteCastleShort
-      );
+    clickOnFigure(
+      cell,
+      board,
+      turn,
+      darkCastleLong,
+      darkCastleShort,
+      whiteCastleLong,
+      whiteCastleShort
+    );
     const isWhiteSelectPiece =
       cell.cell[1] === "8" && formerCell?.piece === pieces.PAWN_WHITE;
     const isDarkSelectPiece =
@@ -125,7 +131,9 @@ const Board: FC = () => {
   }
   function mouseUpHandler(e: MouseEvent<HTMLDivElement>, cell: cell) {
     setDrag(false);
-    if (cell.available === true) movePiece(cell, board, formerCell!);
+    if (cell.available === true) {
+      movePiece(cell, board, formerCell!);
+    }
     (e.target as Element).classList.remove("pieceHover");
   }
   function onMouseOverHandler(e: MouseEvent<HTMLDivElement>, cell: cell) {
@@ -166,7 +174,7 @@ const Board: FC = () => {
           <div className="board__modal modal">
             {end}
             <br />
-            <button className="btn" onClick={restart}>
+            <button className="btn" onClick={handleRestart}>
               Начать снова
             </button>
           </div>

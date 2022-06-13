@@ -82,6 +82,7 @@ export const movePiece =
         c.available === true ? { ...c, available: false } : c
       ),
     ];
+    dispatch({ type: BoardActionTypes.MOVE, payload: [formerCell, cell] });
     if (
       formerCell.cell === "e1" &&
       (cell.cell === "a1" || cell.cell === "c1") &&
