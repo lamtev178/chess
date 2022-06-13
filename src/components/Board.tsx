@@ -160,7 +160,7 @@ const Board: FC = () => {
   return (
     <div className="flex board" id="board" onMouseMove={onMouseMove}>
       {choosePiece ? <Modal color={turn} onClick={pieceIsSelected} /> : <></>}
-      {localStorage.color === "dark" ? boardjsx.reverse() : boardjsx}
+      {localStorage.color === "dark" ? boardjsx : boardjsx.reverse()}
       {end !== GameStatus.PLAYING ? (
         <div>
           <div className="board__modal modal">
